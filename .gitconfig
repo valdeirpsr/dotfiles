@@ -28,7 +28,22 @@
   ui = gui
   bc = branch --show-current
   b = branch --format='%(color:red)%(objectname:short=9)%(color:reset) %(color:cyan)%(align:40)By %(committername) %(committeremail)%(end)%(color:reset) %(color:green)%(align:14)%(committerdate:relative)%(end)%(color:reset) %(if)%(HEAD)%(then)%(color:blue bold italic)%(else)%(end)%(refname:lstrip=2)%(color:reset)'
+  bl = "!b() { \
+   git branch --format \"%(refname:strip=2)\" | while read -r branch_name; do \
+      branch_description=$(git config --get \"branch.$branch_name.description\"); \
+      git b --list \"$branch_name\"; \
+      if [ -n \"$branch_description\" ]; then \
+        echo \"\nDescription:\"; \
+        git config --get \"branch.$branch_name.description\" | sed 's/^/    /g'; \
+      fi; \
+    done; \
+  }; b"
   prev = switch -
 
 [init]
   defaultBranch = main
+~                                                                                                                                                                                                                  
+~                                                                                                                                                                                                                  
+~                                                                                                                                                                                                                  
+~                                                                                                                                                                                                                  
+~           
