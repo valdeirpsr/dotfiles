@@ -1,14 +1,14 @@
 [core]
-  editor = vim
+	editor = vim
   pager = 'less'
 
 [user]
-  email = valdeir.naval@gmail.com
-  name = Valdeir S.
+	email = valdeir.naval@gmail.com
+	name = Valdeir S.
 
 [alias]
-  ls = log --graph --pretty=format:'%Cred%h%Creset: %s %C(yellow)%d%Creset - %C(cyan)By %cn <%ce>%Creset %Cgreen(%cr)%Creset'
-  lg = log --graph --color=always --pretty=format:'%C(yellow)commit %H%Creset%C(auto)%d%Creset%nAuthor: %cn <%ce>%nDate:   %cd %C(12)(%cr)%Creset%n%n    %s%n%n%w(121,4,4)%b%+N'
+	ls = log --graph --pretty=format:'%Cred%h%Creset: %s %C(yellow)%d%Creset - %C(cyan)By %an <%ae>%Creset %Cgreen(%ar)%Creset'
+	lg = log --graph --color=always --pretty=format:'%C(yellow)commit %H%Creset%C(auto)%d%Creset%nAuthor: %cn <%ce>%nDate:   %cd %C(12)(%cr)%Creset%n%n    %s%n%n%w(121,4,4)%b%+N'
   ci = commit -s
   ca  = commit -as
   caa  = !git add -A && git commit -s
@@ -42,8 +42,3 @@
 
 [init]
   defaultBranch = main
-~                                                                                                                                                                                                                  
-~                                                                                                                                                                                                                  
-~                                                                                                                                                                                                                  
-~                                                                                                                                                                                                                  
-~           
