@@ -27,9 +27,6 @@ alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
 # Outros
 alias diff="git diff --no-index"
 
-# Comandos
-command -v calc >> /dev/null || function calc(){ awk "BEGIN{ print $* }" ;}
-
 # Finaliza todos os containers do Docker
 function dockerStopAll() {
   for c in $(docker ps | tail -n +2 | cut -d' ' -f1); do
