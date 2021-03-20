@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Cria um diretório e o acessa imediatamente
+function mkcd() {
+  mkdir -p $@ && cd $_;
+}
+
+# Calculadora
+command -v calc >> /dev/null || function calc(){ awk "BEGIN{ print $* }" ;}
