@@ -9,11 +9,15 @@
 #umask 022
 
 # if running bash
-if [ -n "$BASH_VERSION" ]; then
+if [[ -n "$BASH_VERSION" ]] && [[ -f "$HOME/.bashrc" ]]; then
     # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-      . "$HOME/.bashrc"
-    fi
+  . "$HOME/.bashrc"
+fi
+
+# if running zsh
+if [[ -n "$ZSH_VERSION" ]] && [[ -f "$HOME/.zshrc" ]]; then
+    # include .zshrc if it exists
+    . "$HOME/.zshrc"
 fi
 
 # set PATH so it includes user's private bin if it exists
