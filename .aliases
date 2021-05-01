@@ -24,8 +24,8 @@ alias --="cd -"
 # Alias para capturar o IP
 alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
 
-# Outros
-alias diff="git diff --no-index"
+# Alias diff (comparação)
+command -v diff > /dev/null || alias diff="git diff --no-index"
 
 # Finaliza todos os containers do Docker
 function dockerStopAll() {
