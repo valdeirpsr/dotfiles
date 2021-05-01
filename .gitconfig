@@ -23,6 +23,7 @@
   	v5 = !git config user.name 'Valdeir S.' && git config user.email "valdeir@v5market.com"
   	master = switch master
   	main = switch main
+	develop = switch develop
   	zip = "!a() { filename=$(basename $(pwd)__$(date +%F__%H_%M_%S).zip); git archive --format zip -o $(echo $filename) -9 ${1:-HEAD}; echo $filename; }; a"
   	web = instaweb -d python
   	ui = gui
