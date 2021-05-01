@@ -6,14 +6,20 @@
 	email = valdeir.naval@gmail.com
 	name = Valdeir S.
 
+[log]
+  showSignature = true
+
+[man]
+  viewer = man
+
 [alias]
 	ls = log --graph --pretty=format:'%Cred%h%Creset: %s %C(yellow)%d%Creset - %C(cyan)By %an <%ae>%Creset %Cgreen(%ar)%Creset'
 	lg = log --graph --color=always --pretty=format:'%C(yellow)commit %H%Creset%C(auto)%d%Creset%nAuthor: %cn <%ce>%nDate:   %cd %C(12)(%cr)%Creset%n%n    %s%n%n%w(121,4,4)%b%+N'
-  	ci = commit -s
-  	ca  = commit -as
-  	caa  = !git add -A && git commit -s
+  	ci = commit -sS
+  	ca  = commit -asS
+  	caa  = !git add -A && git commit -sS
   	ds = diff --patch-with-stat
-  	cii = commit -ps
+  	cii = commit -psS
   	go = "!f() { git switch \"$1\"; }; f"
   	aliases = config --get-regexp alias
   	contribs = shortlog --summary --numbered --email
@@ -23,7 +29,7 @@
   	v5 = !git config user.name 'Valdeir S.' && git config user.email "valdeir@v5market.com"
   	master = switch master
   	main = switch main
-	develop = switch develop
+    develop = switch develop
   	zip = "!a() { filename=$(basename $(pwd)__$(date +%F__%H_%M_%S).zip); git archive --format zip -o $(echo $filename) -9 ${1:-HEAD}; echo $filename; }; a"
   	web = instaweb -d python
   	ui = gui
