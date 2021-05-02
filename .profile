@@ -30,6 +30,11 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
+# Define EDITOR (CTRL + X E)
+if [ -n $EDITOR ] ; then
+    EDITOR="vim"
+fi
+
 if [ -f "~/.functions" ]; then
   source ~/.functions
 fi
