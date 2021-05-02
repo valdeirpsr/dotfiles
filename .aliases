@@ -32,38 +32,32 @@ alias docker-stop-all='docker stop $(docker ps --format "{{.ID}}")'
 
 # Executa PHP Interactive Shell
 function start_php_commandline() {
-  versions=$(docker image ls | grep php)
+  php_version=$(docker images --filter=reference="php:8*" --format "{{.ID}}" | head -n 1)
   
-  if [ -n "$1" ] && [ $1 =~ ^[0-9]\.[0-9]$ ]; then
-    versions=$(grep "$1" <<< $versions)
+  if [[ -z $php_version ]]; then
+    php_version=$(docker images --filter=reference="php:7*" --format "{{.ID}}" | head -n 1)
   fi
-  
-  versions=$(head -n 1 <<< $versions | awk '{ print $3 }')
   
   if [ -z "$versions" ]; then
-    versions="php:latest"
+    php_version="php:latest"
   fi
   
-  echo $versions;
+  echo $php_version;
 }
 
-alias php-cli='docker run -it $(start_php_commandline) php -a $@'
+alias php-cli='docker run -it $(start_php_commandline) php $@'
+
+# docker images --filter=reference="node" --format "{{.ID}}" | head -n 1
 
 # Executa Node Interactive Shell
 function start_node_commandline() {
-  versions=$(docker image ls | grep node)
+  node_version=$(docker image ls node --format "{{.ID}}" | head -n 1)
   
-  if [ -n "$1" ]; then
-    versions=$(grep "$1" <<< $versions)
+  if [ -z "$node_version" ]; then
+    node_version="node:latest"
   fi
   
-  versions=$(head -n 1 <<< $versions | awk '{ print $3 }')
-  
-  if [ -z "$versions" ]; then
-    versions="node:latest"
-  fi
-  
-  echo $versions;
+  echo $node_version;
 }
 
 alias node-cli='docker run -it $(start_node_commandline) node'
