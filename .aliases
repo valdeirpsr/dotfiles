@@ -28,13 +28,7 @@ alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
 command -v diff > /dev/null || alias diff="git diff --no-index"
 
 # Finaliza todos os containers do Docker
-function dockerStopAll() {
-  for c in $(docker ps | tail -n +2 | cut -d' ' -f1); do
-    docker stop $c;
-  done
-}
-
-alias docker-stop-all='dockerStopAll'
+alias docker-stop-all='docker stop $(docker ps --format "{{.ID}}")'
 
 # Executa PHP Interactive Shell
 function start_php_commandline() {
