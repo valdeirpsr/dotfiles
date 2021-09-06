@@ -29,6 +29,23 @@ command -v diff > /dev/null || alias diff="git diff --no-index"
 # Finaliza todos os containers do Docker
 alias docker-stop-all='docker stop $(docker ps --format "{{.ID}}")'
 
+# Reset Docker
+function __docker_reset_all() {
+  echo "Esta ação removerá todos os containers, imagens e volumes.";
+  echo "Deseja continuar? (y/N)";
+  read answer
+
+  if [[ $answer = "Y" ]]; then
+    echo "Removendo...";
+    docker container rm $(docker ps -a --format "{{.ID}}")
+    docker image rm $(docker image ls -a --format "{{.ID}}")
+    docker network rm $(docker network ls --format "{{.ID}} {{.Name}}" | grep -vE "bridge|host|none" | cut -d" " -f1)
+  else
+    echo "Ação cancelada";
+  fi
+}
+alias docker-reset='docker_reset_all'
+
 # Executa PHP Interactive Shell
 function start_php_commandline() {
   php_version=$(docker images --filter=reference="php:8*" --format "{{.ID}}" | head -n 1)
