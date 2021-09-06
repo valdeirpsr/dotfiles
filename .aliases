@@ -47,7 +47,7 @@ function __docker_reset_all() {
 alias docker-reset='docker_reset_all'
 
 # Executa PHP Interactive Shell
-function start_php_commandline() {
+function __start_php_commandline() {
   php_version=$(docker images --filter=reference="php:8*" --format "{{.ID}}" | head -n 1)
   
   if [[ -z $php_version ]]; then
@@ -61,12 +61,10 @@ function start_php_commandline() {
   echo $php_version;
 }
 
-alias php-cli='docker run -it $(start_php_commandline) php $@'
-
-# docker images --filter=reference="node" --format "{{.ID}}" | head -n 1
+alias php-cli='docker run -it $(__start_php_commandline) php $@'
 
 # Executa Node Interactive Shell
-function start_node_commandline() {
+function __start_node_commandline() {
   node_version=$(docker image ls node --format "{{.ID}}" | head -n 1)
   
   if [ -z "$node_version" ]; then
@@ -76,4 +74,4 @@ function start_node_commandline() {
   echo $node_version;
 }
 
-alias node-cli='docker run -it $(start_node_commandline) node'
+alias node-cli='docker run -it $(__start_node_commandline) node'
