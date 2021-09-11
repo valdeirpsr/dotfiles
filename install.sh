@@ -1,6 +1,9 @@
 #!/bin/bash
 
 APPS=()
+APPS_SNAPD=()
+APPS_FLATPAK=()
+SYNC_DOTFILES=0
 
 # Configura as cores, caso o terminal as possuas integradas
 function setup_colors() {
@@ -86,10 +89,7 @@ function install_minimal() {
     command -v neofetch >> /dev/null || APPS+=("neofetch")
 
     if [[ $1 = "start" ]]; then
-        set -x;
-        sudo apt update
-        sudo apt install -y ${APPS[@]}
-        set +x;
+        install_apps;
     fi
 }
 
@@ -103,10 +103,7 @@ function install_normal() {
     command -v lynx >> /dev/null || APPS+=("lynx")
 
     if [[ $1 = "start" ]]; then
-        set -x;
-        sudo apt update
-        sudo apt install -y ${APPS[@]}
-        set +x;
+        install_apps;
     fi
 }
 
@@ -122,10 +119,7 @@ function install_server() {
     command -v docker-compose >> /dev/null || APPS+=("docker-compose")
 
     if [[ $1 = "start" ]]; then
-        set -x;
-        sudo apt update
-        sudo apt install -y ${APPS[@]}
-        set +x;
+        install_apps;
     fi
 }
 
@@ -148,22 +142,12 @@ function install_full() {
     # flatpak
     command -v flatpak >> /dev/null || APPS+=("flatpak")
 
-    set -x;
-    sudo apt update;
-    sudo apt install -y ${APPS[@]};
-    set +x;
-    install_apps_from_snapd;
+    sync_dotfiles;
 
-    set -x;
-    # ohmyzsh
-    CHSH="no" RUNZSH="no" \
-        sh -c "$(curl -sSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --skip-chsh --unattended
-    set +x;
+    install_apps_from_snapd;
 }
 
 function install_apps_from_snapd() {
-    local APPS_SNAPD=()
-
     # visual studio code
     command -v code >> /dev/null || APPS_SNAPD+=("code")
 
@@ -182,11 +166,7 @@ function install_apps_from_snapd() {
     # simplescreenrecorder
     command -v simplescreenrecorder >> /dev/null || APPS_SNAPD+=("simplescreenrecorder")
 
-    set -x;
-    sudo snap install ${APPS_SNAPD[@]}
-    set +x;
-
-    sync_dotfiles;
+    install_apps;
 }
 
 function install_funny() {
@@ -197,34 +177,10 @@ function install_funny() {
     echo "Funny";
 }
 
-function sync_dotfiles() {
-    dialog --stdout --clear --yesno "Deseja sincronizar os arquivos .dotfiles?" 0 0;
-
-    if [[ $? -eq 0 ]]; then
-        dialog --clear;
-
-        [[ ! -d /tmp ]] && mkdir /tmp
-        [[ ! -d /tmp/dotfiles ]] && mkdir /tmp/dotfiles
-
-        set -x;
-        sudo apt install fonts-powerline
-
-        curl -sSLo "/tmp/dotfiles.tar.gz" "https://github.com/valdeirpsr/dotfiles/archive/refs/heads/main.tar.gz"
-
-        tar -zxf /tmp/dotfiles.tar.gz -C /tmp/dotfiles --strip-components 1
-
-        tar -cC /tmp/dotfiles -f - . | tar -xf - -C ~
-
-        sed -i "s/DEFAULT_USER=\"user\"/DEFAULT_USER=\"$USER\"/g" ~/.zshrc
-        set +x;
-    fi
-
-    msg_finish;
-}
-
 function choose_apps() {
-    appsSelected=$(
+    APPS=$(
         dialog \
+            --clear \
             --stdout \
             --title "Escolha os apps" \
             --extra-button \
@@ -248,19 +204,11 @@ function choose_apps() {
             flatpak Flatpak on \
     );
 
-    appsSelected=$(echo ${appsSelected/docker/docker-ce docker-ce-cli containerd.io docker-compose})
+    APPS=$(echo ${APPS/docker/docker-ce docker-ce-cli containerd.io docker-compose})
 
     if [[ $? -eq 3 ]]; then
-        appsSelectedExtra=$(dialog --stdout --clear --title "Separe por espaço" --inputbox "Informe outros pacotes" 0 0);
-        appsSelected="$appsSelected $appsSelectedExtra";
-    fi
-
-    dialog --clear;
-
-    if [[ -n $appsSelected ]]; then
-        set -x;
-        sudo apt install -y $appsSelected;
-        set +x;
+        APPSExtra=$(dialog --stdout --clear --title "Separe por espaço" --inputbox "Informe outros pacotes" 0 0);
+        APPS="$APPS $APPSExtra";
     fi
 
     choose_apps_from_snapd;
@@ -270,8 +218,9 @@ function choose_apps_from_snapd() {
     if [[ $(command -v snap) ]]; then
         arch=$(uname -m);
 
-        appsSelected=$(
+        APPS_SNAPD=$(
             dialog \
+                --clear \
                 --stdout \
                 --title "Escolha os apps" \
                 --checklist "Instalação via Snapcraft.io ($arch)" \
@@ -286,31 +235,18 @@ function choose_apps_from_snapd() {
                 $([[ $arch = "x86_64" ]] && slack slack on) \
                 $([[ $arch = "x86_64" ]] && skype skype on) \
         );
-
-        if [[ $? -eq 1 ]]; then
-            echo "Putz";
-            choose_apps_from_flathub;
-            return 1;
-        fi
-
-        dialog --clear;
-
-        if [[ -n $appsSelected ]]; then
-            set -x;
-            sudo snap install $appsSelected;
-            set +x;
-        fi
     fi
 
-    choose_apps_from_flathub;
+    choose_apps_from_flatpak;
 }
 
-function choose_apps_from_flathub() {
+function choose_apps_from_flatpak() {
     if [[ $(command -v flatpak) ]]; then
         arch=$(uname -m);
 
-        appsSelected=$(
+        APPS_FLATPAK=$(
             dialog \
+                --clear \
                 --stdout \
                 --title "Escolha os apps" \
                 --checklist "Instalação via Flathub ($arch)" \
@@ -331,17 +267,65 @@ function choose_apps_from_flathub() {
                 org.kde.krita Krita on \
                 $([[ $arch = "x86_64" ]] && com.google.AndroidStudio "Android Studio" on) \
         );
-
-        dialog --clear;
-
-        if [[ -n $appsSelected ]]; then
-            set -x;
-            sudo flatpak install -y flathub $appsSelected;
-            set +x;
-        fi
     fi
 
     sync_dotfiles;
+}
+
+function sync_dotfiles() {
+    dialog --stdout --clear --yesno "Deseja sincronizar os arquivos .dotfiles?" 0 0;
+
+    if [[ $? -eq 0 ]]; then
+        SYNC_DOTFILES=1;
+    fi
+
+    install_apps;
+}
+
+function install_apps() {
+
+    if [[ $APPS =~ "docker" ]]; then
+        prepare_docker_install;
+    fi
+
+    # ohmyzsh
+    if [[ $APPS =~ "zsh" ]]; then
+        CHSH="no" RUNZSH="no" \
+            sh -c "$(curl -sSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --skip-chsh --unattended
+    fi
+
+    sudo apt update;
+
+    if [[ -n $APPS ]]; then
+        sudo apt install -y ${APPS[@]};
+    fi
+
+    if [[ -n $APPS_SNAPD ]]; then
+        sudo snap install $APPS_SNAPD;
+    fi
+
+    if [[ -n $APPS_FLATPAK ]]; then
+        sudo flatpak install -y flathub $APPS_FLATPAK;
+    fi
+
+    if [[ $SYNC_DOTFILES -eq 1 ]]; then
+        [[ ! -d /tmp ]] && mkdir /tmp
+        [[ ! -d /tmp/dotfiles ]] && mkdir /tmp/dotfiles
+
+        set -x;
+        sudo apt install fonts-powerline
+
+        curl -sSLo "/tmp/dotfiles.tar.gz" "https://github.com/valdeirpsr/dotfiles/archive/refs/heads/main.tar.gz"
+
+        tar -zxf /tmp/dotfiles.tar.gz -C /tmp/dotfiles --strip-components 1
+
+        tar -cC /tmp/dotfiles -f - . | tar -xf - -C ~
+
+        sed -i "s/DEFAULT_USER=\"user\"/DEFAULT_USER=\"$USER\"/g" ~/.zshrc
+        set +x;
+    fi
+
+    msg_finish;
 }
 
 function msg_finish() {
