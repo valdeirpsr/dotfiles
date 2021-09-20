@@ -301,6 +301,7 @@ function install_apps() {
     fi
 
     if [[ -n $APPS_SNAPD ]]; then
+        echo "sudo snap install $APPS_SNAPD;";
         sudo snap install $APPS_SNAPD;
     fi
 
