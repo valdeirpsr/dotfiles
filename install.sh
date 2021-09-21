@@ -234,6 +234,7 @@ function choose_apps_from_snapd() {
                 $([[ $arch = "x86_64" ]] && echo "teams Teams on") \
                 $([[ $arch = "x86_64" ]] && echo "slack slack on") \
                 $([[ $arch = "x86_64" ]] && echo "skype skype on") \
+                $([[ $arch = "x86_64" ]] && echo "task Task-Runner on") \
         );
     fi
 
