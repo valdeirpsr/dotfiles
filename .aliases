@@ -26,6 +26,16 @@ alias myip="dig +short myip.opendns.com @resolver1.opendns.com"
 # Alias diff (comparação)
 command -v diff > /dev/null || alias diff="git diff --no-index"
 
+# Taskbook
+function __taskbook_alias() {
+  cmd="$1"
+  args=${@:2}
+
+  taskbook "--$cmd" $args
+}
+
+alias tb="__taskbook_alias"
+
 # Finaliza todos os containers do Docker
 alias docker-stop-all='docker stop $(docker ps --format "{{.ID}}")'
 
