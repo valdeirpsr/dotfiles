@@ -206,14 +206,14 @@ function choose_apps() {
             lsb-release "Linux Standard Base" on \
             htop "Process Viewer" on \
             less less on \
-            neofetch Neofetch on \
+            neofetch Neofetch off \
             ffmpeg ffmpeg on \
-            ffmpegthumbnailer "Video Thumbnails" on \
+            ffmpegthumbnailer "Video Thumbnails" off \
             docker Docker on \
-            tilix Tilix on \
-            zsh zsh on \
-            snapd Snapcraft on \
-            flatpak Flatpak on \
+            tilix Tilix off \
+            zsh zsh off \
+            snapd Snapcraft off \
+            flatpak Flatpak off \
     );
 
     APPS=$(echo ${APPS/docker/docker-ce docker-ce-cli containerd.io docker-compose})
@@ -237,21 +237,10 @@ function choose_apps_from_snapd() {
                 --title "Escolha os apps" \
                 --checklist "Instalação via Snapcraft.io ($arch)" \
                 0 0 0 \
-                $([[ $arch = "x86_64" ]] && echo "discord Discord on") \
-                inkscape Inkscape on \
-                $([[ $arch = "x86_64" ]] && echo "android-studio Android-Studio on") \
-                $([[ $arch = "x86_64" ]] && echo "postman postman on") \
-                $([[ $arch = "x86_64" ]] && echo "krita krita on") \
-                $([[ $arch = "x86_64" ]] && echo "taskbook taskbook on") \
-                $([[ $arch = "x86_64" ]] && echo "teams Teams on") \
-                $([[ $arch = "x86_64" ]] && echo "skype skype on") \
-                $([[ $arch = "x86_64" ]] && echo "task Task-Runner on") \
+                $([[ $arch = "x86_64" ]] && echo "postman postman off") \
+                $([[ $arch = "x86_64" ]] && echo "taskbook taskbook off") \
+                $([[ $arch = "x86_64" ]] && echo "task Task-Runner off") \
         );
-
-        if [[ $APPS_SNAPD =~ android-studio ]]; then
-            APPS_SNAPD_CLASSIC+=('android-studio')
-            APPS_SNAPD=$(echo $APPS_SNAPD | sed 's/android-studio//g')
-        fi
 
         if [[ $APPS_SNAPD =~ task ]]; then
             APPS_SNAPD_CLASSIC+=('task')
@@ -273,22 +262,22 @@ function choose_apps_from_flatpak() {
                 --title "Escolha os apps" \
                 --checklist "Instalação via Flathub ($arch)" \
                 0 0 0 \
-                $([[ $arch = "x86_64" ]] && echo "com.spotify.Client Spotify on") \
-                $([[ $arch = "x86_64" ]] && echo "com.discordapp.Discord Discord on") \
-                $([[ $arch = "x86_64" ]] && echo "com.valvesoftware.Steam Steam on") \
-                $([[ $arch = "x86_64" ]] && echo "us.zoom.Zoom Zoom on") \
-                com.visualstudio.code VSCode on \
-                org.telegram.desktop Telegram on \
-                $([[ $arch = "x86_64" ]] && echo "com.obsproject.Studio OBS-Studio on") \
-                $([[ $arch = "x86_64" ]] && echo "com.microsoft.Teams Teams on") \
-                $([[ $arch = "x86_64" ]] && echo "com.skype.Client Skype on") \
-                org.inkscape.Inkscape "Ink Scape" on \
-                org.gnome.gitlab.somas.Apostrophe Apostrophe on \
-                com.simplenote.Simplenote Simplenote on \
-                org.flameshot.Flameshot Flameshot on \
-                org.kde.krita Krita on \
-                $([[ $arch = "x86_64" ]] && echo "com.google.AndroidStudio Android-Studio on") \
-                $([[ $arch = "x86_64" ]] && echo "com.slack.Slack Slack on") \
+                $([[ $arch = "x86_64" ]] && echo "com.spotify.Client Spotify off") \
+                $([[ $arch = "x86_64" ]] && echo "com.discordapp.Discord Discord off") \
+                $([[ $arch = "x86_64" ]] && echo "com.valvesoftware.Steam Steam off") \
+                $([[ $arch = "x86_64" ]] && echo "us.zoom.Zoom Zoom off") \
+                com.visualstudio.code VSCode off \
+                org.telegram.desktop Telegram off \
+                $([[ $arch = "x86_64" ]] && echo "com.obsproject.Studio OBS-Studio off") \
+                $([[ $arch = "x86_64" ]] && echo "com.microsoft.Teams Teams off") \
+                $([[ $arch = "x86_64" ]] && echo "com.skype.Client Skype off") \
+                org.inkscape.Inkscape "Ink Scape" off \
+                org.gnome.gitlab.somas.Apostrophe Apostrophe off \
+                com.simplenote.Simplenote Simplenote off \
+                org.flameshot.Flameshot Flameshot off \
+                org.kde.krita Krita off \
+                $([[ $arch = "x86_64" ]] && echo "com.google.AndroidStudio Android-Studio off") \
+                $([[ $arch = "x86_64" ]] && echo "com.slack.Slack Slack off") \
         );
     fi
 
