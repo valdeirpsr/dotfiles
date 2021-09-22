@@ -216,6 +216,8 @@ function choose_apps() {
             wget wget on \
             vim vim on \
             curl curl on \
+            httpie HTTPie on \
+            jq Json on \
             lsb-release "Linux Standard Base" on \
             htop "Process Viewer" on \
             less less on \
