@@ -87,6 +87,15 @@ function prepare_kubectl_install() {
     echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 }
 
+# Prepara a instalação do Github CLI
+function prepare_gh_install() {
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
+        sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | \
+        sudo tee /etc/apt/sources.list.d/github-cli.list
+}
+
 # Instala os pacotes mínimos
 function install_minimal() {
     # git
@@ -305,8 +314,16 @@ function sync_dotfiles() {
 
 function install_apps() {
 
-    if [[ $APPS =~ "docker" ]]; then
+    if [[ $APPS =~ docker ]]; then
         prepare_docker_install;
+    fi
+
+    if [[ $APPS =~ kubectl ]]; then
+        prepare_kubectl_install;
+    fi
+
+    if [[ $APPS =~ gh ]]; then
+        prepare_gh_install;
     fi
 
     # ohmyzsh
@@ -343,6 +360,7 @@ function install_apps() {
         curl -sSLo "/tmp/dotfiles.tar.gz" "https://github.com/valdeirpsr/dotfiles/archive/refs/heads/main.tar.gz"
 
         tar -zxf /tmp/dotfiles.tar.gz -C /tmp/dotfiles --strip-components 1
+        rm -r /tmp/dotfiles/{README.md,install.sh}
 
         tar -cC /tmp/dotfiles -f - . | tar -xf - -C ~
 
