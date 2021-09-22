@@ -2,6 +2,7 @@
 
 APPS=()
 APPS_SNAPD=()
+APPS_SNAPD_CLASSIC=()
 APPS_FLATPAK=()
 SYNC_DOTFILES=0
 
@@ -243,10 +244,19 @@ function choose_apps_from_snapd() {
                 $([[ $arch = "x86_64" ]] && echo "krita krita on") \
                 $([[ $arch = "x86_64" ]] && echo "taskbook taskbook on") \
                 $([[ $arch = "x86_64" ]] && echo "teams Teams on") \
-                $([[ $arch = "x86_64" ]] && echo "slack slack on") \
                 $([[ $arch = "x86_64" ]] && echo "skype skype on") \
                 $([[ $arch = "x86_64" ]] && echo "task Task-Runner on") \
         );
+
+        if [[ $APPS_SNAPD =~ android-studio ]]; then
+            APPS_SNAPD_CLASSIC+=('android-studio')
+            APPS_SNAPD=$(echo $APPS_SNAPD | sed 's/android-studio//g')
+        fi
+
+        if [[ $APPS_SNAPD =~ task ]]; then
+            APPS_SNAPD_CLASSIC+=('task')
+            APPS_SNAPD=$(echo $APPS_SNAPD | sed 's/task//g')
+        fi
     fi
 
     sync_dotfiles;
@@ -278,6 +288,7 @@ function choose_apps_from_flatpak() {
                 org.flameshot.Flameshot Flameshot on \
                 org.kde.krita Krita on \
                 $([[ $arch = "x86_64" ]] && echo "com.google.AndroidStudio Android-Studio on") \
+                $([[ $arch = "x86_64" ]] && echo "com.slack.Slack Slack on") \
         );
     fi
 
@@ -313,8 +324,11 @@ function install_apps() {
     fi
 
     if [[ -n $APPS_SNAPD ]]; then
-        echo "sudo snap install $APPS_SNAPD;";
         sudo snap install $APPS_SNAPD;
+    fi
+
+    if [[ -n $APPS_SNAPD_CLASSIC ]]; then
+        sudo snap install --classic $APPS_SNAPD_CLASSIC;
     fi
 
     if [[ -n $APPS_FLATPAK ]]; then
