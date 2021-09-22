@@ -262,7 +262,7 @@ function choose_apps_from_snapd() {
 
         if [[ $APPS_SNAPD =~ task ]]; then
             APPS_SNAPD_CLASSIC+=('task')
-            APPS_SNAPD=$(echo $APPS_SNAPD | sed 's/task//g')
+            APPS_SNAPD=$(echo $APPS_SNAPD | sed 's/\btask\b//g')
         fi
     fi
 
@@ -402,8 +402,6 @@ function start() {
     fi;
 
     installMethod=$(dialog --stdout --clear --menu "Escolha o método de instalação" 0 0 0 1 "Minimal" 2 "Normal" 3 "Server" 4 "Full" 5 "Custom"); dialog --clear
-
-    set -ea;
 
     case $installMethod in
         1) install_minimal "start";;
