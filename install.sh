@@ -81,6 +81,19 @@ function prepare_docker_install() {
     fi
 }
 
+# Prepara a instalação do Kubectl
+function prepare_kubectl_install() {
+    set -x;
+
+    sudo apt install -y apt-transport-https \
+        ca-certificates \
+        curl;
+
+    sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+    echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+}
+
 # Instala os pacotes mínimos
 function install_minimal() {
     # git
@@ -210,6 +223,7 @@ function choose_apps() {
             ffmpeg ffmpeg on \
             ffmpegthumbnailer "Video Thumbnails" off \
             docker Docker on \
+            kubectl Kubernetes off \
             tilix Tilix off \
             zsh zsh off \
             snapd Snapcraft off \
