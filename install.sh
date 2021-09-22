@@ -211,7 +211,7 @@ function choose_apps() {
         APPS="$APPS $APPSExtra";
     fi
 
-    choose_apps_from_snapd;
+    choose_apps_from_flatpak;
 }
 
 function choose_apps_from_snapd() {
@@ -238,7 +238,7 @@ function choose_apps_from_snapd() {
         );
     fi
 
-    choose_apps_from_flatpak;
+    sync_dotfiles;
 }
 
 function choose_apps_from_flatpak() {
@@ -270,7 +270,7 @@ function choose_apps_from_flatpak() {
         );
     fi
 
-    sync_dotfiles;
+    choose_apps_from_snapd;
 }
 
 function sync_dotfiles() {
