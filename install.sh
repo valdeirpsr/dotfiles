@@ -325,6 +325,11 @@ function install_apps() {
     if [[ $APPS =~ gh ]]; then
         prepare_gh_install;
     fi
+    
+    if [[ $APPS =~ vim ]]; then
+        curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+            https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    fi
 
     # ohmyzsh
     if [[ $APPS =~ "zsh" ]]; then
