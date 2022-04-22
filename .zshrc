@@ -3,6 +3,11 @@
 
 export ZSH=$HOME/.oh-my-zsh
 
+setopt HIST_IGNORE_SPACE
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_DUPS
+setopt HIST_FIND_NO_DUPS 
+
 DEFAULT_USER="user"
 
 # Set name of the theme to load --- if set to "random", it will
