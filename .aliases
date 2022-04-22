@@ -12,6 +12,7 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+alias remove-empty-folders="find $pwd -type d -empty -delete"
 
 # Alias para pular diretórios
 alias ..="cd .."
