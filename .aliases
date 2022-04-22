@@ -72,7 +72,7 @@ function __start_php_commandline() {
   echo $php_version;
 }
 
-alias php-cli='docker run -it $(__start_php_commandline) php $@'
+alias php-cli='docker run -it --network host $(__start_php_commandline) php $@'
 
 # Executa Node Interactive Shell
 function __start_node_commandline() {
