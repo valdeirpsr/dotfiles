@@ -80,7 +80,9 @@ plugins=(
   docker
   docker-compose
   git
+  transfer
   web-search
+  zsh-autosuggestions
 )
 
 source $ZSH/oh-my-zsh.sh
