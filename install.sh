@@ -370,6 +370,9 @@ function install_apps() {
         CHSH="no" RUNZSH="no" \
             sh -c "$(curl -sSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --skip-chsh --unattended
 
+        git clone https://github.com/zsh-users/zsh-autosuggestions \
+            ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
         fmt_success "A instalação do oh-my-zsh foi concluída"
     fi
 
