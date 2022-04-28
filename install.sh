@@ -373,6 +373,19 @@ function install_apps() {
         set +x;
     fi
 
+    if [[ $APPS =~ "vim" ]]; then
+        # Instala o gerenciador de plugin do vim
+        curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+            https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+        # Cria pasta para fonts
+        mkdir -p ~/.local/share/fonts 2>/dev/null
+
+        # Baixa a fonte para o plugin devicons
+        curl -sSLo "~/.local/share/fonts/Hack Regular Nerd Font Complete.ttf" \
+            "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete.ttf"
+    fi
+
     msg_finish;
 }
 
