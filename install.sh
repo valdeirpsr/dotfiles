@@ -348,6 +348,12 @@ function install_apps() {
     if [[ -n $APPS_FLATPAK ]]; then
         sudo flatpak install -y flathub $APPS_FLATPAK;
     fi
+    
+    # ohmyzsh
+    if [[ $APPS =~ "zsh" ]]; then
+        CHSH="no" RUNZSH="no" \
+            sh -c "$(curl -sSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --skip-chsh --unattended
+    fi
 
     if [[ $SYNC_DOTFILES -eq 1 ]]; then
         [[ ! -d /tmp ]] && mkdir /tmp
@@ -365,12 +371,6 @@ function install_apps() {
 
         sed -i "s/DEFAULT_USER=\"user\"/DEFAULT_USER=\"$USER\"/g" ~/.zshrc
         set +x;
-    fi
-    
-    # ohmyzsh
-    if [[ $APPS =~ "zsh" ]]; then
-        CHSH="no" RUNZSH="no" \
-            sh -c "$(curl -sSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --skip-chsh --unattended
     fi
 
     msg_finish;
