@@ -18,13 +18,18 @@ function setup_colors() {
 
 # Formata e exibe mensagem de erro
 fmt_error() {
-  printf '%sError: %s%s\n' "$BOLD$RED" "$*" "$RESET" >&2;
+  printf '%sErro: %s%s\n' "$BOLD$RED" "$*" "$RESET" >&2;
   exit 1;
 }
 
 # Formata e exibe mensagem de sucesso
 fmt_success() {
   printf '%sSucesso: %s%s\n' "$BOLD$GREEN" "$*" "$RESET"
+}
+
+# Formata e exibe mensagem de espera
+fmt_wait() {
+  printf '%sAguarde: %s%s\n' "$BOLD$YELLOW" "$*" "$RESET"
 }
 
 # Formata e exibe código
@@ -315,42 +320,62 @@ function sync_dotfiles() {
 function install_apps() {
 
     if [[ $APPS =~ docker ]]; then
+        fmt_wait "Preparando instalação do Docker"
         prepare_docker_install;
+        fmt_success "Preparação para instalação do Docker concluída"
     fi
 
     if [[ $APPS =~ kubectl ]]; then
+        fmt_wait "Preparando instalação do Kubernetes"
         prepare_kubectl_install;
+        fmt_success "Preparação para instalação do Kubernetes concluída"
     fi
 
     if [[ $APPS =~ gh ]]; then
+        fmt_wait "Preparando instalação do GitHub CLI"
         prepare_gh_install;
+        fmt_success "Preparação para instalação do GitHub CLI concluída"
     fi
 
+    fmt_wait "Atualizando repositório"
     sudo apt update;
+    fmt_success "Repositório atualizado"
 
     if [[ -n $APPS ]]; then
+        fmt_wait "Instalando os apps: $(echo ${APPS[@]} | sed 's/ /\n/g' | sed 's/^/ - /g')"
         sudo apt install -y ${APPS[@]};
     fi
 
     if [[ -n $APPS_SNAPD ]]; then
+        fmt_wait "Instalando os apps (via Snapd): $(echo ${APPS_SNAPD[@]} | sed 's/ /\n/g' | sed 's/^/ - /g')"
         sudo snap install $APPS_SNAPD;
     fi
 
     if [[ -n $APPS_SNAPD_CLASSIC ]]; then
+        fmt_wait "Instalando os apps (via Snapd Classic): $(echo ${APPS_SNAPD_CLASSIC[@]} | sed 's/ /\n/g' | sed 's/^/ - /g')"
         sudo snap install --classic $APPS_SNAPD_CLASSIC;
     fi
 
     if [[ -n $APPS_FLATPAK ]]; then
+        fmt_wait "Instalando os apps (via FlatPak): $(echo ${APPS_FLATPAK[@]} | sed 's/ /\n/g' | sed 's/^/ - /g')"
         sudo flatpak install -y flathub $APPS_FLATPAK;
     fi
+
+    fmt_success "Aplicados instalados"
     
     # ohmyzsh
     if [[ $APPS =~ "zsh" ]]; then
+        fmt_wait "Instalando oh-my-zsh"
+
         CHSH="no" RUNZSH="no" \
             sh -c "$(curl -sSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --skip-chsh --unattended
+
+        fmt_success "A instalação do oh-my-zsh foi concluída"
     fi
 
     if [[ $SYNC_DOTFILES -eq 1 ]]; then
+        fmt_wait "Sincronizando DotFiles..."
+
         [[ ! -d /tmp ]] && mkdir /tmp
         [[ ! -d /tmp/dotfiles ]] && mkdir /tmp/dotfiles
 
@@ -366,9 +391,12 @@ function install_apps() {
 
         sed -i "s/DEFAULT_USER=\"user\"/DEFAULT_USER=\"$USER\"/g" ~/.zshrc
         set +x;
+        fmt_success "Sincronização finalizada..."
     fi
 
     if [[ $APPS =~ "vim" ]]; then
+        fmt_wait "Configurando o editor VIM..."
+
         # Instala o gerenciador de plugin do vim
         curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
             https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -379,15 +407,27 @@ function install_apps() {
         # Baixa a fonte para o plugin devicons
         curl -sSLo "~/.local/share/fonts/Hack Regular Nerd Font Complete.ttf" \
             "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete.ttf"
+
+        fmt_success "Editor VIM configurado"
     fi
 
     # Instala o awscli2
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m).zip" -o "/tmp/awscliv2.zip"
+    arch=$(uname -m)
 
-    if [[ -e /tmp/awscliv2.zip ]]; then
-        [[ -d /tmp/aws ]] && rm -r /tmp/aws
-        unzip /tmp/awscliv2.zip -d /tmp
-        sudo /tmp/aws/install
+    if [[ $arch =~ x86_64|aarch64 ]]; then
+        fmt_wait "Instalando AWS-CLI-v2"
+
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-$arch.zip" -o "/tmp/awscliv2.zip"
+
+        if [[ -e /tmp/awscliv2.zip ]]; then
+            [[ -d /tmp/aws ]] && rm -r /tmp/aws
+            unzip /tmp/awscliv2.zip -d /tmp
+            sudo /tmp/aws/install
+
+            fmt_success "AWS Cli instalado"
+        else
+            fmt_msg "Não foi possível instalar o awscli-v2"
+        fi
     fi
 
     msg_finish;
