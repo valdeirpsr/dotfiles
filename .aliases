@@ -13,6 +13,7 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 alias remove-empty-folders="find $pwd -type d -empty -delete"
+alias remove-duplicate-files="find $pwd -type f -print0 | xargs -0 md5sum | sort -r | uniq -dD -w32 | awk '{ print \$2 }' | while read -r file; do rm \$file; done"
 
 # Alias para pular diretórios
 alias ..="cd .."
@@ -32,7 +33,7 @@ function __taskbook_alias() {
   cmd="$1"
   args=${@:2}
 
-  taskbook "--$cmd" $args
+  eval "taskbook --$cmd $args"
 }
 
 alias tb="__taskbook_alias"
