@@ -373,6 +373,12 @@ function install_apps() {
         git clone https://github.com/zsh-users/zsh-autosuggestions \
             ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
+        git clone https://github.com/spaceship-prompt/spaceship-prompt.git \
+            "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/spaceship-prompt" --depth=1
+
+        ln -s "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/spaceship-prompt/spaceship.zsh-theme" \
+            "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/spaceship.zsh-theme"
+
         fmt_success "A instalação do oh-my-zsh foi concluída"
     fi
 
