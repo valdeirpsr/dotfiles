@@ -8,6 +8,12 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+if [[ -f "$HOME/.aliases" ]]; then
+    # include .aliases if it exists
+  . "$HOME/.aliases"
+fi
+
+
 # if running bash
 if [[ -n "$BASH_VERSION" ]] && [[ -f "$HOME/.bashrc" ]]; then
     # include .bashrc if it exists
