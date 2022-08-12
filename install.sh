@@ -390,9 +390,9 @@ function install_apps() {
         tar -zxf /tmp/dotfiles.tar.gz -C /tmp/dotfiles --strip-components 1
         rm -r /tmp/dotfiles/{README.md,install.sh}
 
-        tar -cC /tmp/dotfiles -f - . | tar -xf - -C ~
+        tar -cC /tmp/dotfiles -f - . | tar -xf - -C $HOME
 
-        sed -i "s/DEFAULT_USER=\"user\"/DEFAULT_USER=\"$USER\"/g" ~/.zshrc
+        sed -i "s/DEFAULT_USER=\"user\"/DEFAULT_USER=\"$USERNAME\"/g" ~/.zshrc
         set +x;
         fmt_success "Sincronização finalizada..."
     fi
