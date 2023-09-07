@@ -21,10 +21,12 @@ height=$(identify -format "%h" $inputFile)
 pointSizeLarge=$(echo "$width / 10.75" | bc)
 pointSizeSmall=$(( $width / 50 ))
 
-if [ -n $outputFolder ]; then
-  outputFolder=$(echo "$outputFolder" | sed 's/\/$//g')
-  outputFile="${outputFolder}/$outputFile"
+if [ -z $outputFolder ]; then
+  outputFolder="$PWD"
 fi
+
+outputFolder=$(echo "$outputFolder" | sed 's/\/$//g')
+outputFile="${outputFolder}/$outputFile"
 
 convert $inputFile \
   -size "${width}x$height" xc:none \
